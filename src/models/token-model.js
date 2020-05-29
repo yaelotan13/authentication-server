@@ -12,6 +12,7 @@ async function insertToken(userID, token, expirationDate) {
 }
 
 async function tokenIsValid(token) {
+  console.log(`SELECT EXISTS(SELECT FROM sessions WHERE token='${token}')`);
   try {
     const result = await db.query(`SELECT EXISTS(SELECT FROM sessions WHERE token='${token}')`);
     return result.rows[0].exists;

@@ -12,6 +12,8 @@ async function setNewToken(userId) {
 }
 
 async function tokenIsValid(cookie) {
+  console.log('HERE');
+  console.log(cookie);
   if (!cookie || !cookie.token) {
     return { clientError: 'authority error - no cookie' };
   }
