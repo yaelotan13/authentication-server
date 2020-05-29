@@ -1,12 +1,13 @@
 const db = require('../util/init-DB')();
 
-async function insertToken(userID, token) {
+async function insertToken(userID, token, expirationDate) {
   console.log('in model, inserting token');
-  
+  console.log(`INSERT INTO sessions (token, user_id, expiration_date) VALUES ('${token}', ${userID}, to_timestamp(${expirationDate}));`);
   try {
-    await db.query(`INSERT INTO sessions (token, userID) VALUES ('${token}', ${userID});`);
+    await db.query(`INSERT INTO sessions (token, user_id, expiration_date) VALUES ('${token}', ${userID}, to_timestamp(${expirationDate}));`);
   } catch (e) {
     console.log('DB error occurred on insertToken');
+    console.log(e);
   }
 }
 
@@ -16,6 +17,7 @@ async function tokenIsValid(token) {
     return result.rows[0].exists;
   } catch (e) {
     console.log('DB error occurred on tokenIsValid');
+    console.log(e);
   }
 }
 
@@ -24,6 +26,7 @@ async function deleteToken(token) {
     await db.query(`DELETE FROM sessions WHERE token='${token}'`);
   } catch (e) {
     console.log('DB error occurred on deleteToken');
+    console.log(e);
   }
 }
 

@@ -1,9 +1,13 @@
 const tokenModel = require('../models/token-model');
 const randtoken = require('rand-token');
 
+const ONE_DAY = 86400000;
+
 async function setNewToken(userId) {
   const token = randtoken.generate(16);
-  await tokenModel.insertToken(userId, token);
+  const currentDate = new Date();
+  let expirationDate = currentDate.getTime() + ONE_DAY;
+  await tokenModel.insertToken(userId, token, expirationDate);
   return { token };
 }
 
