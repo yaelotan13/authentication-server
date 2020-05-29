@@ -6,22 +6,30 @@ try {
   console.log('crypto support is disabled!');
 }
 
-const requiredParamsForSignUpAreValid = (user) =>
-  (user.firstName && user.lastName && user.email && user.password);
+const requiredParamsForSignUpAreValid = user => user.name && user.email && user.password;
 
-const requiredParamsForSignInAreValid = (user) => (user.email && user.password);
+const requiredParamsForSignInAreValid = user => user.email && user.password;
 
 async function signUp(user) {
   if (!requiredParamsForSignUpAreValid(user)) {
-    return { clientError: 'please specify first name, last name, email and password with the request' };
+    console.log('in requiredParamsForSignUpAreValid');
+    return { clientError: 'please add email, name and password with the request' };
   }
 
+  const emailAlreadyExists = await userModel.emailExists(user.email);
+
+  if (emailAlreadyExists) {
+    return { clientError: 'email already exists' };
+  }
+
+  console.log('in here');
   const hash = crypto.createHash("sha256")
     .update(user.password)
     .digest('base64');
   user.password = hash;
   const userID = await userModel.insertUser(user);
-
+  console.log('in user-service');
+  console.log(userID);
   return { userID }
 }
 
@@ -39,16 +47,11 @@ async function validateUser(user) {
     .update(user.password)
     .digest('base64');
 
-  if (hashedPassword !== userFromDB.password) {
+  if (hashedPassword !== userFromDB.user_password) {
     return { clientError: 'password is not correct' }
   }
 
-  return { userId : userFromDB.userid, userName : `${userFromDB.firstname} ${userFromDB.lastname}` }
-}
-
-async function getUserNameByToken(token) {
-  const { firstname, lastname } = await userModel.getUserNameByToken(token);
-  return { userName : `${firstname} ${lastname}`};
+  return { userId : userFromDB.user_id }
 }
 
 async function getUserIdByToken(token) {
@@ -77,7 +80,6 @@ async function getUserByID(userID) {
 module.exports = {
   signUp,
   validateUser,
-  getUserNameByToken,
   getUserIdByToken,
   getUserByID,
   getUserByToken,
