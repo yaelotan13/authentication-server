@@ -1,7 +1,7 @@
 {
-  "name": "blog-server",
+  "name": "authentication-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "authentication server with log in, sign up, and log out endpoints",
   "main": "./src/api.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
