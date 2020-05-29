@@ -1,13 +1,11 @@
 const db = require('../util/init-DB')();
 
-async function insertUser(user) {
+async function insertUser(name, email, password) {
+  console.log(`INSERT INTO users (user_name, user_email, user_password) VALUES ('${name}', '${email}', '${password}')`)
   try {
-    await db.query({
-      text: 'INSERT INTO users (user_name, user_email, user_password) VALUES ($1, $2, $3)',
-      values: Object.values(user),
-    });
-
+    await db.query(`INSERT INTO users (user_name, user_email, user_password) VALUES ('${name}', '${email}', '${password}')`);
     const result = await db.query('SELECT MAX(user_id) FROM users');
+    console.log(result.rows[0].max);
     return result.rows[0].max;
   } catch (e) {
     console.log('DB error occurred on insert new user'); 
@@ -37,55 +35,8 @@ async function getUserByEmail(email) {
   }
 }
 
-async function getUserById(userID) {
-  try {
-    const result = await db.query(`SELECT user_name, user_email
-    FROM users WHERE user_id=${userID}`);
-    return result.rows[0];
-  } catch (e) {
-    console.log('DB error occurred on get user by id');
-    console.log(e);
-  }
-}
-
-async function getUserByToken(token) {
-  try {
-    const result = await db.query(`SELECT user_name, user_email
-    FROM users WHERE user_id=(SELECT user_id FROM sessions WHERE token='${token}')`);
-    return result.rows[0];
-  } catch (e) {
-    console.log('DB error occurred on get user by token');
-    console.log(e);
-  }
-}
-
-async function getUserNameByToken(token) {
-  try {
-    const result = await db.query(`select user_name from users where user_id=(select user_id from sessions where token='${token}')`);
-    return result.rows[0];
-
-  } catch (e) {
-    console.log('DB error occurred on get user by token');
-    console.log(e);
-  }
-}
-
-async function getUserIdByToken(token) {
-  try {
-    const result = await db.query(`select user_id from users where user_id=(select user_id from sessions where token='${token}')`);
-    return result.rows[0];
-  } catch (e) {
-    console.log('DB error occurred on get user by token');
-    console.log(e);
-  }
-}
-
 module.exports = {
   insertUser,
-  getUserByEmail,
-  getUserById,
-  getUserNameByToken,
-  getUserIdByToken,
-  getUserByToken,
-  emailExists
+  emailExists,
+  getUserByEmail
 }
