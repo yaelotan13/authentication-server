@@ -26,8 +26,6 @@ async function signUp(user) {
     .digest('base64');
   user.password = hash;
   const userID = await userModel.insertUser(user.name, user.email, user.password);
-  console.log('returning user ID');
-  console.log(userID);
 
   return { userID }
 }
