@@ -1,8 +1,6 @@
 const db = require('../util/init-DB')();
 
 async function insertToken(userID, token, expirationDate) {
-  console.log('in model, inserting token');
-  console.log(`INSERT INTO sessions (token, user_id, expiration_date) VALUES ('${token}', ${userID}, to_timestamp(${expirationDate}));`);
   try {
     await db.query(`INSERT INTO sessions (token, user_id, expiration_date) VALUES ('${token}', ${userID}, to_timestamp(${expirationDate}));`);
   } catch (e) {
@@ -12,7 +10,6 @@ async function insertToken(userID, token, expirationDate) {
 }
 
 async function tokenIsValid(token) {
-  console.log(`SELECT EXISTS(SELECT FROM sessions WHERE token='${token}')`);
   try {
     const result = await db.query(`SELECT EXISTS(SELECT FROM sessions WHERE token='${token}')`);
     return result.rows[0].exists;
