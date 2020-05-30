@@ -18,7 +18,7 @@ async function signUp(user) {
   const emailAlreadyExists = await userModel.emailExists(user.email);
 
   if (emailAlreadyExists) {
-    return { clientError: 'email exists' };
+    return { clientError: 'email already exists' };
   }
 
   const hash = crypto.createHash("sha256")

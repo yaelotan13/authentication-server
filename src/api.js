@@ -18,22 +18,14 @@ app.post('/users', async (req, res) => {
   console.log(req.body);
   const { userID, clientError } = await userService.signUp(req.body);
   if (clientError) {
-    res.status(400).send(clientError);
+    console.log('has error, sending 409 response');
+    res.status(409).send(clientError);
   } else {
+    console.log('no errors, setting a new token');
     const { token } = await tokenService.setNewToken(userID);
     res.cookie('token', token, { maxAge: 90000000, httpOnly: true, path:'/' });
-    res.send(`userId ${userID}: new user ${req.body.email} has been created`);
-  }
-});
-
-app.use('/', async (req, res, next) => {
-  console.log('checking the token validity...');
-  const { token, clientError } = await tokenService.tokenIsValid(req.cookies);
-  if (clientError) {
-    res.status(401).send(clientError);
-  } else {
-    req.body.userToken = token;
-    next();
+    console.log('sending status 201');
+    res.status(201).send('new user created')
   }
 });
 
@@ -46,6 +38,17 @@ app.post('/signin', async (req, res) => {
     const { token } = await tokenService.setNewToken(userId);
     res.cookie('token', token, { maxAge: 90000000, httpOnly: true, path:'/' });
     res.send('is logged in!');
+  }
+});
+
+app.use('/', async (req, res, next) => {
+  console.log('checking the token validity...');
+  const { token, clientError } = await tokenService.tokenIsValid(req.cookies);
+  if (clientError) {
+    res.status(401).send(clientError);
+  } else {
+    req.body.userToken = token;
+    next();
   }
 });
 
