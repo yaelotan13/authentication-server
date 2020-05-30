@@ -31,13 +31,13 @@ app.post('/users', async (req, res) => {
 
 app.post('/signin', async (req, res) => {
   console.log('got a request to sign in');
-  const { userId, clientError } = await userService.validateUser(req.body);
+  const { userId, userName, clientError } = await userService.validateUser(req.body);
   if (clientError) {
     res.status(400).send(clientError);
   } else {
     const { token } = await tokenService.setNewToken(userId);
     res.cookie('token', token, { maxAge: 90000000, httpOnly: true, path:'/' });
-    res.send('is logged in!');
+    res.send(userName);
   }
 });
 

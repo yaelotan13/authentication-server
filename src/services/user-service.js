@@ -48,7 +48,7 @@ async function validateUser(user) {
     return { clientError: 'password is not correct' }
   }
 
-  return { userId : userFromDB.user_id }
+  return { userId: userFromDB.user_id, userName : userFromDB.user_name }
 }
 
 module.exports = {
