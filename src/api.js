@@ -58,3 +58,8 @@ app.post('/signout', async (req, res) => {
   res.clearCookie('token');
   res.status(202).send('is logged out');
 });
+
+app.get('/user', async (req, res) => {
+  console.log('checking if the user is valid');
+  res.status(200).send('ok');
+})
