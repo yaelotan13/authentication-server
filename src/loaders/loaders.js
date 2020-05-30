@@ -13,7 +13,7 @@ function init(expressApp) {
   if (process.env.NODE_ENV === 'production') {
     console.log('running in production mode');
     expressApp.use(cors({
-      origin: 'https://yael-auth-server-api.herokuapp.com/',
+      origin: 'https://master.d1gdz1he65nmp7.amplifyapp.com/',
       credentials: true,
     }))
   } else {
