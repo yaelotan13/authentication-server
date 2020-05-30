@@ -9,16 +9,20 @@ function init(expressApp) {
 
   expressApp.use(express.json());
   expressApp.use(cookieParser());
-  process.env.NODE_ENV === 'production' ?
-  expressApp.use(cors({
-    origin: 'https://yael-auth-server-api.herokuapp.com/',
-    credentials: true,
-  }))
-  : 
-  expressApp.use(cors({
-    origin: `http://localhost:${process.env.PORT || 3333}`,
-    credentials: true,
-  }))
+
+  if (process.env.NODE_ENV === 'production') {
+    console.log('running in production mode');
+    expressApp.use(cors({
+      origin: 'https://yael-auth-server-api.herokuapp.com/',
+      credentials: true,
+    }))
+  } else {
+    console.log('running in development mode');
+    expressApp.use(cors({
+      origin: 'http://localhost:3000',
+      credentials: true,
+    }))
+  }
 }
 
 module.exports = {
